@@ -1,7 +1,8 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { Fragment } from 'react';
 import Characters from './components/characters/Characters.components';
 
 const Tab = createMaterialTopTabNavigator();
@@ -25,13 +26,23 @@ const styles = StyleSheet.create({
 export default function App() {
   return (
     <PaperProvider theme={DefaultTheme}>
-      <NavigationContainer>
-        <Tab.Navigator style={styles.container}>
-          <Tab.Screen name="Characters" component={Characters} />
-          <Tab.Screen name="Locations" component={DetailsScreen} />
-          <Tab.Screen name="Episodes" component={DetailsScreen} />
-        </Tab.Navigator>
-      </NavigationContainer>
+      <>
+        {Platform.OS === 'web' ? (
+          <style type="text/css">{`
+        @font-face {
+          font-family: 'MaterialCommunityIcons';
+          src: url(${require('react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf')}) format('truetype');
+        }
+      `}</style>
+        ) : null}
+        <NavigationContainer>
+          <Tab.Navigator style={styles.container}>
+            <Tab.Screen name="Characters" component={Characters} />
+            <Tab.Screen name="Locations" component={DetailsScreen} />
+            <Tab.Screen name="Episodes" component={DetailsScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </>
     </PaperProvider>
   );
 }
