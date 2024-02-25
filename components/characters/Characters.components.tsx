@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
-import { getCharacters, Character } from 'rickmortyapi';
-import { DataTable } from 'react-native-paper';
+import { ScrollView } from 'react-native';
+import { Character } from 'rickmortyapi';
+import { DataTable, Text } from 'react-native-paper';
+import CharacterDetails from './CharacterDetails.component';
+import CharactersService from '../../services/characters/characters.service';
 
 const itemsPerPage = 20;
 
@@ -12,13 +14,15 @@ function Characters() {
   const [count, setCount] = useState(0);
   const from = (page - 1) * itemsPerPage + 1;
   const to = page * itemsPerPage;
+  const [visible, setVisible] = useState(false);
+  const [selectedCharacterId, setSelectedCharacterId] = useState<number>(0);
 
   const fetchCharacters = async () => {
-    const characters = await getCharacters({ page });
+    const response = await CharactersService.getListCharacters({ page });
     // set state with the result
-    setItems(characters.data.results || []);
-    setNumberOfPages(characters?.data?.info?.pages || 0);
-    setCount(characters?.data?.info?.count || 0);
+    setItems(response.results || []);
+    setNumberOfPages(response?.info?.pages || 0);
+    setCount(response?.info?.count || 0);
   };
 
   useEffect(() => {
@@ -27,8 +31,9 @@ function Characters() {
       // make sure to catch any error
       .catch(console.error);
   }, [page]);
-  const onSelectItem = () => {
-    console.log('Button touched!');
+  const onSelectItem = (characterId: number) => {
+    setVisible(true);
+    setSelectedCharacterId(characterId);
   };
 
   const setUpPage = async (pageNumber: number) => {
@@ -37,8 +42,19 @@ function Characters() {
     }
   };
 
+  const onDismiss = () => {
+    setVisible(false);
+  };
+
   return (
     <DataTable>
+      {visible && (
+        <CharacterDetails
+          visible={visible}
+          onDismiss={onDismiss}
+          characterId={selectedCharacterId as number}
+        />
+      )}
       <ScrollView>
         <DataTable.Header>
           <DataTable.Title>Name</DataTable.Title>
@@ -47,7 +63,7 @@ function Characters() {
         </DataTable.Header>
 
         {items.map(item => (
-          <DataTable.Row key={item.id} onPress={onSelectItem}>
+          <DataTable.Row key={item.id} onPress={() => onSelectItem(item.id)}>
             <DataTable.Cell>
               <Text>{item.name}</Text>
             </DataTable.Cell>
@@ -63,7 +79,7 @@ function Characters() {
         <DataTable.Pagination
           page={page}
           numberOfPages={numberOfPages}
-          onPageChange={page => setUpPage(page)}
+          onPageChange={targetPage => setUpPage(targetPage)}
           label={`${from}-${to} of ${count}`}
           selectPageDropdownLabel="Rows per page"
         />
