@@ -1,19 +1,11 @@
-import { StyleSheet, View, Text, Platform } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { Fragment } from 'react';
 import Characters from './components/characters/Characters.components';
+import Locations from './components/locations/Locations.components';
 
 const Tab = createMaterialTopTabNavigator();
-
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -38,8 +30,8 @@ export default function App() {
         <NavigationContainer>
           <Tab.Navigator style={styles.container}>
             <Tab.Screen name="Characters" component={Characters} />
-            <Tab.Screen name="Locations" component={DetailsScreen} />
-            <Tab.Screen name="Episodes" component={DetailsScreen} />
+            <Tab.Screen name="Locations" component={Locations} />
+            <Tab.Screen name="Episodes" component={Locations} />
           </Tab.Navigator>
         </NavigationContainer>
       </>
