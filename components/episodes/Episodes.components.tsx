@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { Location } from 'rickmortyapi';
+import { Episode } from 'rickmortyapi';
 import { DataTable, Text } from 'react-native-paper';
-import LocationDetails from './LocationDetails.component';
-import LocationsService from '../../services/locations/locations.service';
+import EpisodeDetails from './EpisodeDetails.component';
+import EpisodesService from '../../services/episodes/episodes.service';
 
 const itemsPerPage = 20;
 
-function Locations() {
-  const [items, setItems] = useState<Location[]>([]);
+function Episodes() {
+  const [items, setItems] = useState<Episode[]>([]);
   const [page, setPage] = useState(1);
   const [numberOfPages, setNumberOfPages] = useState(0);
   const [count, setCount] = useState(0);
@@ -17,8 +17,8 @@ function Locations() {
   const [visible, setVisible] = useState(false);
   const [selectedCharacterId, setSelectedCharacterId] = useState<number>(0);
 
-  const fetchLocations = async () => {
-    const response = await LocationsService.getListLocations({ page });
+  const fetchEpisodes = async () => {
+    const response = await EpisodesService.getListEpisodes({ page });
     // set state with the result
     setItems(response.results || []);
     setNumberOfPages(response?.info?.pages || 0);
@@ -27,7 +27,7 @@ function Locations() {
 
   useEffect(() => {
     // call the function
-    fetchLocations()
+    fetchEpisodes()
       // make sure to catch any error
       .catch(console.error);
   }, [page]);
@@ -49,17 +49,16 @@ function Locations() {
   return (
     <DataTable>
       {visible && (
-        <LocationDetails
+        <EpisodeDetails
           visible={visible}
           onDismiss={onDismiss}
-          locationId={selectedCharacterId as number}
+          characterId={selectedCharacterId as number}
         />
       )}
       <ScrollView>
         <DataTable.Header>
           <DataTable.Title>Name</DataTable.Title>
-          <DataTable.Title>Dimension</DataTable.Title>
-          <DataTable.Title>Type</DataTable.Title>
+          <DataTable.Title>Air date</DataTable.Title>
         </DataTable.Header>
 
         {items.map(item => (
@@ -68,10 +67,7 @@ function Locations() {
               <Text>{item.name}</Text>
             </DataTable.Cell>
             <DataTable.Cell>
-              <Text>{item.dimension}</Text>
-            </DataTable.Cell>
-            <DataTable.Cell>
-              <Text>{item.type}</Text>
+              <Text>{item.air_date}</Text>
             </DataTable.Cell>
           </DataTable.Row>
         ))}
@@ -88,4 +84,4 @@ function Locations() {
   );
 }
 
-export default Locations;
+export default Episodes;
