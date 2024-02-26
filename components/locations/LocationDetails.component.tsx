@@ -1,5 +1,5 @@
 import { Text } from 'react-native-paper';
-import { Image, Modal, View, Button } from 'react-native';
+import { Modal, View, Button } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Location } from 'rickmortyapi';
 import styles from './LocationDetails.stylesheet';
